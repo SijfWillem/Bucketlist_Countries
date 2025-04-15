@@ -45,12 +45,11 @@ The application will be available at `http://localhost:3000`.
 
 ## Usage
 
-1. Prepare your travel plans in a PDF file with the following format:
+1. Prepare your travel plans in a .md file with the following format:
    ```
-   ### Trip Name
+   ### Trip Name (Trip duration)
    - Country 1
    - Country 2
-   Duration: X days/weeks
    ```
 
 2. Upload the PDF file through the application interface
