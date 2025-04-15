@@ -22,7 +22,7 @@ An interactive web application that helps you visualize and plan your travel buc
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/travel-bucket-list-map.git
+git clone [https://github.com/yourusername/travel-bucket-list-map.git](https://github.com/SijfWillem/Bucketlist_Countries.git)
 cd travel-bucket-list-map
 ```
 
