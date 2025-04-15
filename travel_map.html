@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My Travel Bucket List</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 500px;
+        }
+
+        .itinerary-panel {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="map"></div>
+    <div id="itinerary-panel" class="itinerary-panel">
+        Click on a trip to view the itinerary.
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([0, 0], 2); // Set initial view to a world view
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Trip data with itineraries and coordinates
+        var trips = [
+            {
+                name: "North & South America",
+                itinerary: `
+                    Week 1-2: Mexico - Mexico City (History, museums, food, and culture), Teotihuacan, Xochimilco canals. [cite: 2, 3]
+                    Week 3-4: Belize & Guatemala - Belize (Blue Hole, Xunantunich, Ambergris Caye), Guatemala (Antigua, Volcán Pacaya, Tikal). [cite: 3, 4]
+                    Week 5-6: Colombia - Bogotá, Coffee Region, Medellín, Cartagena. [cite: 5]
+                    Week 7-8: Ecuador & Peru - Ecuador (Quito, Galápagos Islands), Peru (Machu Picchu, Sacred Valley, Cusco, Lima). [cite: 6, 7]
+                    Week 9-10: Argentina & Chile - Argentina (Buenos Aires, Iguazu Falls, Patagonia), Chile (Santiago, Atacama Desert, Torres del Paine). [cite: 8, 9]
+                    Week 11-12: Brazil - Rio de Janeiro, Amazon Rainforest, Iguazu Falls. [cite: 10]
+                    Uruguay - Montevideo, Punta del Este, Colonia del Sacramento. [cite: 11, 12]
+                    Bolivia - Salt Flats, La Paz, Uyuni. [cite: 11, 12]
+                `,
+                locations: [
+                    { name: "Mexico City", coords: [19.4326, -99.1332] },
+                    { name: "Belize City", coords: [17.5489, -88.1987] },
+                    { name: "Antigua", coords: [14.5667, -90.7333] },
+                    { name: "Bogotá", coords: [4.6097, -74.0817] },
+                    { name: "Quito", coords: [-0.1807, -78.4678] },
+                    { name: "Machu Picchu", coords: [-13.1633, -72.5456] },
+                    { name: "Buenos Aires", coords: [-34.6037, -58.3816] },
+                    { name: "Santiago", coords: [-33.4474, -70.6736] },
+                    { name: "Rio de Janeiro", coords: [-22.9068, -43.1729] },
+                    { name: "Montevideo", coords: [-34.9011, -56.1645] },
+                    { name: "La Paz", coords: [-16.4897, -68.1192] }
+                ]
+            },
+            {
+                name: "Scandinavia and the Baltics",
+                itinerary: `
+                    Denmark - Copenhagen (Tivoli Gardens, Nyhavn), Møns Klint (chalk cliffs). [cite: 13, 14]
+                    Sweden - Stockholm (Royal Palace, archipelago). [cite: 14]
+                    Norway - Oslo, fjords tour (Geirangerfjord, Lofoten Islands). [cite: 14]
+                    Estonia - Tallinn (medieval UNESCO city). [cite: 15]
+                    Lithuania - Vilnius (charming old town). [cite: 15, 16]
+                `,
+                locations: [
+                    { name: "Copenhagen", coords: [55.6761, 12.5683] },
+                    { name: "Stockholm", coords: [59.3294, 18.0686] },
+                    { name: "Oslo", coords: [59.9139, 10.7522] },
+                    { name: "Tallinn", coords: [59.4370, 24.7536] },
+                    { name: "Vilnius", coords: [54.6872, 25.2797] }
+                ]
+            },
+   {
+                name: "Eastern & Southern Europe",
+                itinerary: `
+                    Poland - Kraków, Wrocław. [cite: 16, 17]
+                    Slovenia - Lake Bled, Ljubljana. [cite: 17]
+                    Croatia - Dalmatian coast, Dubrovnik, Split. [cite: 17, 18]
+                    Bosnia & Herzegovina - Sarajevo, Mostar. [cite: 18]
+                    Greece - Athens, Santorini, Crete. [cite: 18, 19]
+                `,
+                locations: [
+                    { name: "Kraków", coords: [50.0647, 19.9450] },
+                    { name: "Wrocław", coords: [51.11, 17.03] },    
+                    { name: "Ljubljana", coords: [46.0569, 14.5058] },
+                    { name: "Dubrovnik", coords: [42.6506, 18.0944] },
+                    { name: "Sarajevo", coords: [43.8563, 18.4131] },
+                    { name: "Athens", coords: [37.9838, 23.7275] }
+                ]
+            },
+            {
+                name: "Central & Western Europe",
+                itinerary: `
+                    Austria - Vienna, Salzburg. [cite: 19, 20]
+                    Switzerland - Zurich, Lucerne, Swiss Alps. [cite: 20]
+                    Germany - Berlin, Munich. [cite: 20, 21]
+                    Luxembourg - Luxembourg. [cite: 21]
+                `,
+                locations: [
+                    { name: "Vienna", coords: [48.2082, 16.3738] },
+                    { name: "Salzburg", coords: [47.8095, 13.0550] },
+                    { name: "Zurich", coords: [47.3769, 8.5417] },
+                    { name: "Berlin", coords: [52.5200, 13.4050] },
+                    { name: "Munich", coords: [48.1351, 11.5820] },
+                    { name: "Luxembourg", coords: [49.8153, 6.1296] }
+                ]
+            },
+   {
+                name: "Iberian Peninsula",
+                itinerary: `
+                    Spain - Barcelona, Madrid, Seville. [cite: 22]
+                    Portugal - Lisbon, Porto, Sintra. [cite: 23]
+                `,
+                locations: [
+                    { name: "Barcelona", coords: [41.3851, 2.1734] },
+                    { name: "Madrid", coords: [40.4168, -3.7038] },
+                    { name: "Seville", coords: [37.3886, -5.9845] },
+                    { name: "Lisbon", coords: [38.7223, -9.1393] },
+                    { name: "Porto", coords: [41.1579, -8.6291] },
+                    { name: "Sintra", coords: [38.7961, -9.3869] }
+                ]
+            },
+            {
+                name: "Northern & Eastern Africa",
+                itinerary: `
+                    Week 1: Morocco - Marrakech, Atlas Mountains, Sahara Desert, Essaouira, Chefchaouen. [cite: 24, 25]
+                    Week 2: Egypt - Cairo (Pyramids of Giza, Egyptian Museum), Luxor (Valley of the Kings), Nile River cruise. [cite: 26, 27]
+                    Week 3-4: Kenya & Tanzania - Kenya (Nairobi, Maasai Mara, Amboseli), Tanzania (Serengeti National Park, Ngorongoro Crater, Zanzibar). [cite: 28, 29]
+                `,
+                locations: [
+                    { name: "Marrakech", coords: [31.6295, -7.9811] },
+                    { name: "Cairo", coords: [30.0444, 31.2357] },
+                    { name: "Nairobi", coords: [-1.2921, 36.8219] },
+                    { name: "Dar es Salaam", coords: [-6.7924, 39.2083] }
+                ]
+            },
+            {
+                name: "Southern Africa",
+                itinerary: `
+                    Week 5: South Africa - Cape Town (Table Mountain, Robben Island), Winelands (Stellenbosch), Kruger National Park. [cite: 30, 31]
+                    Week 6: Botswana & Namibia - Botswana (Okavango Delta, Chobe National Park), Namibia (Sossusvlei dunes, Etosha National Park). [cite: 31, 32]
+                `,
+                locations: [
+                    { name: "Cape Town", coords: [-33.9249, 18.4241] },
+                    { name: "Gaborone", coords: [-24.6544, 25.9081] },
+                    { name: "Windhoek", coords: [-22.5594, 17.0832] }
+                ]
+            },
+            {
+                name: "Oceania",
+                itinerary: `
+                    Week 1-2: New Zealand - Auckland, Rotorua, Queenstown, Fiordland National Park, Milford Sound, Southern Alps. [cite: 33, 34]
+                    Week 3-4: Australia - Sydney (Opera House, Harbour Bridge, Bondi Beach), Great Barrier Reef, Melbourne, Uluru. [cite: 34, 35]
+                `,
+                locations: [
+                    { name: "Auckland", coords: [-36.8485, 174.7633] },
+                    { name: "Queenstown", coords: [-45.0312, 168.6626] },
+                    { name: "Sydney", coords: [-33.8688, 151.2093] },
+                    { name: "Cairns", coords: [-16.9186, 145.7781] },
+                    { name: "Melbourne", coords: [-37.8136, 144.9631] },
+                    { name: "Uluru", coords: [-25.3446, 131.0369] }
+                ]
+            },
+        ];
+
+        // Add markers for each trip
+        trips.forEach(function (trip) {
+            var marker = L.marker(trip.locations[0].coords).addTo(map); // Use the first location for the marker
+            marker.bindPopup(trip.name);
+            marker.on('click', function () {
+                document.getElementById('itinerary-panel').innerHTML = "<h3>" + trip.name + "</h3><p>" + trip.itinerary + "</p>";
+            });
+
+   // Add routes for each trip
+            var routePoints = trip.locations.map(loc => loc.coords);
+            L.polyline(routePoints, { color: 'red' }).addTo(map);
+        });
+    </script>
+
+</body>
+
+</html>
